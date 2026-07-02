@@ -685,13 +685,14 @@ function executePurgeWorkspaceSequence() {
     renderWorkspaceMainView();
 }
 
+
 // =========================================================================
-// EMAILJS PIPELINE ENGINE UTILITY LINK & IDENTITY VERIFICATION SUBSYSTEM
+// WHATSAPP PIPELINE ENGINE UTILITY LINK & IDENTITY VERIFICATION SUBSYSTEM
 // =========================================================================
 
 /**
  * Initiates the project submission pipeline by opening an identity 
- * verification modal requesting user email and password keys.
+ * verification modal requesting the user's password key with a toggle option.
  */
 function sendProjectToFortDevelopers() {
     // Save workspace data before triggering validation views
@@ -707,49 +708,64 @@ function sendProjectToFortDevelopers() {
 
     content.innerHTML = `
         <h3>Verify Your Identity</h3>
-        <p style="font-size: 0.85rem; color: #e63946; margin-top: 5px; font-weight: bold;">
-            Enter your valid email address, if your email is recieved a confirmation email will be sent to the address.
+        <p style="font-size: 0.85rem; color: var(--dark-charcoal); margin-top: 5px;">
+            Enter your password to send your project details and attached files directly via WhatsApp.
         </p>
         <div class="form-input-container margin-top-sm" style="display: flex; flex-direction: column; gap: 10px;">
-            <input type="email" id="verification-email" class="form-field-control" placeholder="Enter valid email address..." required style="width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px;">
-            <input type="password" id="verification-password" class="form-field-control" placeholder="Enter password..." required style="width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px;">
+            <input type="password" id="verification-password" class="form-field-control" placeholder="Enter confirmation password verification string" required style="width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px;">
             
-            <!-- Hidden node placeholder container for authentication tracking errors -->
-            <p id="password-error-node" style="display: none; color: #e63946; font-size: 0.8rem; margin: 0; font-weight: bold;">Incorrect password.</p>
+            <!-- Show Password Checkbox Element -->
+            <div style="display: flex; align-items: center; gap: 6px; margin-top: 2px;">
+                <input type="checkbox" id="toggle-password-visibility" onclick="toggleVerificationPasswordMasking()" style="cursor: pointer;">
+                <label for="toggle-password-visibility" style="font-size: 0.8rem; color: gray; cursor: pointer; user-select: none;">Show Password</label>
+            </div>
+            
+            <!-- Error node placeholder container aligning with your CSS class definitions -->
+            <div id="password-error-node" class="text-danger-alert hidden-node"></div>
         </div>
         <div class="btn-group margin-top-md" style="display: flex; gap: 10px;">
             <button class="btn-gray" onclick="closeSecondaryOverlayModal()" style="flex: 1;">Cancel</button>
-            <button class="btn-blue" onclick="processVerifiedProjectSubmission()" style="flex: 1;">Confirm Sending</button>
+            <button class="btn-blue" onclick="processVerifiedProjectSubmission()" style="flex: 1; background-color: #25D366;">Send to WhatsApp</button>
         </div>
     `;
 }
 
 /**
- * Validates inputs, checks credentials, constructs text formatting templates,
- * and handles multi-template dispatch sequencing protocols.
+ * Toggles the input masking attribute between protected text and standard characters.
+ */
+function toggleVerificationPasswordMasking() {
+    const passwordField = document.getElementById("verification-password");
+    if (passwordField) {
+        passwordField.type = passwordField.type === "password" ? "text" : "password";
+    }
+}
+
+/**
+ * Validates password criteria matches the application's verification key,
+ * and compiles the target project string directly into the wa.me pipeline redirect.[cite: 7]
  */
 function processVerifiedProjectSubmission() {
-    const inputEmail = document.getElementById("verification-email").value.trim();
-    const inputPassword = document.getElementById("verification-password").value.trim();
+    const inputPassword = document.getElementById("verification-password").value;
     const errorNode = document.getElementById("password-error-node");
+    
+    // Clear and hide error box safely
+    if (errorNode) {
+        errorNode.classList.add("hidden-node");
+        errorNode.innerText = "";
+    }
 
-    if (!inputEmail || !inputPassword) {
-        alert("Please fill out both your email and password fields before continuing.");
+    if (!inputPassword) {
+        alert("Please enter your password before continuing.");
         return;
     }
 
-    // Validate if the inputted credential matches the active state profile key
-    const currentRegisteredPassword = APP_STATE.currentUser.password || "";
-    if (inputPassword !== currentRegisteredPassword) {
+    // Matches verification exactly against your system's current profile schema
+    if (inputPassword !== APP_STATE.currentUser.secretKey) {
         if (errorNode) {
-            errorNode.style.display = "block"; // Displays the hidden incorrect password node alert
+            errorNode.innerText = "Security Validation Verification Error: Incorrect Password Matching Entry.";
+            errorNode.classList.remove("hidden-node");
         }
         return;
-    }
-
-    // Hide error node if verification succeeds
-    if (errorNode) {
-        errorNode.style.display = "none";
     }
 
     const projectOwnerName = APP_STATE.currentUser.identityName || "Developer Profile User";
@@ -761,10 +777,8 @@ function processVerifiedProjectSubmission() {
 
     const templateIdsAttached = APP_STATE.currentProject.linkedTemplates.map(t => t.id).join(", ") || "None Linked";
 
-    // Text Template String Layout includes input verification email in the body
-    const formattedEmailMessageBodyContent = `
-Hi Fort Developers, I am ${projectOwnerName},
-My email address is: ${inputEmail}
+    // Text Template String Layout containing all project info
+    const formattedWhatsAppMessageBodyContent = `Hi Fort Developers, I am ${projectOwnerName},
 My whatsapp number is +${dialCode}${whatsappNumber}
 
 I need you to create a website for me named ${websiteName}.
@@ -774,97 +788,18 @@ ${websiteLayout}
 These are the features;
 ${websiteFeatures}
 
-All my files needed are attached to the message. Linked Framework Design Template IDs: [${templateIdsAttached}].
-Thanks.
-    `;
+All my files needed are attached to this message. Linked Framework Design Template IDs: [${templateIdsAttached}].
+Thanks.`;
 
-    // Consolidated variables dataset parameter map passing explicit routing definitions
-    const emailJsPayloadVariablesParameters = {
-        to_email: "fortdevelopers492@gmail.com",
-        from_name: projectOwnerName,
-        project_name: websiteName,
-        message: formattedEmailMessageBodyContent,
-        user_email: inputEmail // Explicit key argument mapped to route dashboard auto-replies
-    };
-
-    // Close security validation view state to prepare next status message
+    // Close security validation view state to prepare for redirect
     closeSecondaryOverlayModal();
 
-    // Template 1 Dispatch Chain Execution
-    emailjs.send("service_ejag5pe", "template_zplwktm", emailJsPayloadVariablesParameters)
-        .then(() => {
-            // Template 2 Dispatch Chain Execution (Fires auto-reply routing payload)
-            return emailjs.send("service_ejag5pe", "template_9lerger", emailJsPayloadVariablesParameters);
-        })
-        .then(() => {
-            // Displays success UI prompt modal only if operations pass seamlessly without faults
-            promptWhatsAppManualFilesSubmissionModal();
-        })
-        .catch((error) => {
-            console.error("Transmission interruption dropped connection:", error);
-            // Render an explicit failure message layout instead of displaying the WhatsApp prompt modal
-            promptEmailTransmissionFailureModal(error);
-        });
-}
-
-/**
- * Generates an alternative overlay dashboard warning card block when transfers encounter fatal interruptions.
- */
-function promptEmailTransmissionFailureModal(errorDetails) {
-    const overlay = document.getElementById("secondary-modal");
-    const content = document.getElementById("secondary-modal-content");
-    if (!overlay || !content) return;
-
-    overlay.classList.add("active");
-    content.className = "modal-box";
-
-    content.innerHTML = `
-        <h3 style="color: #e63946;">Submission Failed</h3>
-        <p class="margin-top-sm" style="line-height: 1.5; color: var(--dark-charcoal);">
-            Your request could not be sent. Please check your network connection and try again.
-        </p>
-        <p style="font-size: 0.75rem; color: gray; margin-top: 5px; font-family: monospace;">
-            Error Details: ${errorDetails?.text || errorDetails?.message || "Unknown error context"}
-        </p>
-        <div class="btn-group margin-top-md">
-            <button class="btn-gray" style="width: 100%;" onclick="closeSecondaryOverlayModal()">Close</button>
-        </div>
-    `;
-}
-
-/**
- * Renders the WhatsApp document asset notification overlay modal view card framework block.
- */
-function promptWhatsAppManualFilesSubmissionModal() {
-    const overlay = document.getElementById("secondary-modal");
-    const content = document.getElementById("secondary-modal-content");
-    if (!overlay || !content) return;
-
-    overlay.classList.add("active");
-    content.className = "modal-box";
-
-    content.innerHTML = `
-        <h3>Email Forwarded Successfully</h3>
-        <p class="margin-top-sm" style="line-height: 1.5; color: var(--dark-charcoal);">
-            Please send the files manually on WhatsApp to complete your design configuration manifest submission sequence.
-        </p>
-        <div class="btn-group margin-top-md">
-            <button class="btn-blue" style="width: 100%; background-color: #25D366;" onclick="executeWhatsAppRedirectionRedirect()">Send</button>
-        </div>
-    `;
-}
-
-/**
- * Compiles a deep link redirection string mapping the required WhatsApp messaging layout template configurations.
- */
-function executeWhatsAppRedirectionRedirect() {
-    const defaultSupportLineNumber = "2348028241162"; // Nigeria (+234) 08028241162 pipeline target
-    const targetPrewrittenMessageText = "I've sent my instructions via email this are my files.";
+    // Compile deep link redirection string routing directly to WhatsApp
+    const defaultSupportLineNumber = "2348028241162"; // target support line
+    const secureEncodedUrlPipelineString = `https://wa.me/${defaultSupportLineNumber}?text=${encodeURIComponent(formattedWhatsAppMessageBodyContent)}`;
     
-    const secureEncodedUrlPipelineString = `https://wa.me/${defaultSupportLineNumber}?text=${encodeURIComponent(targetPrewrittenMessageText)}`;
-    
+    // Launch window directly to the WhatsApp chat configuration
     window.open(secureEncodedUrlPipelineString, "_blank");
-    closeSecondaryOverlayModal();
 }
 
 /**
@@ -876,4 +811,3 @@ function closeSecondaryOverlayModal() {
         overlay.classList.remove("active");
     }
 }
-
