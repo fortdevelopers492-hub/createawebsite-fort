@@ -1,0 +1,194 @@
+All the info should be sent by whatsapp now no need of email. Through wa.me link to +2348028241162 but password should still be imputed no need of email.
+
+// =========================================================================
+// EMAILJS PIPELINE ENGINE UTILITY LINK & IDENTITY VERIFICATION SUBSYSTEM
+// =========================================================================
+
+/**
+ * Initiates the project submission pipeline by opening an identity 
+ * verification modal requesting user email and password keys.
+ */
+function sendProjectToFortDevelopers() {
+    // Save workspace data before triggering validation views
+    saveCurrentWorkspaceData();
+
+    const overlay = document.getElementById("secondary-modal");
+    const content = document.getElementById("secondary-modal-content");
+    
+    if (!overlay || !content) return;
+
+    overlay.classList.add("active");
+    content.className = "modal-box";
+
+    content.innerHTML = `
+        <h3>Verify Your Identity</h3>
+        <p style="font-size: 0.85rem; color: #e63946; margin-top: 5px; font-weight: bold;">
+            Enter your valid email address, if your email is recieved a confirmation email will be sent to the address.
+        </p>
+        <div class="form-input-container margin-top-sm" style="display: flex; flex-direction: column; gap: 10px;">
+            <input type="email" id="verification-email" class="form-field-control" placeholder="Enter valid email address..." required style="width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px;">
+            <input type="password" id="verification-password" class="form-field-control" placeholder="Enter password..." required style="width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px;">
+            
+            <!-- Hidden node placeholder container for authentication tracking errors -->
+            <p id="password-error-node" style="display: none; color: #e63946; font-size: 0.8rem; margin: 0; font-weight: bold;">Incorrect password.</p>
+        </div>
+        <div class="btn-group margin-top-md" style="display: flex; gap: 10px;">
+            <button class="btn-gray" onclick="closeSecondaryOverlayModal()" style="flex: 1;">Cancel</button>
+            <button class="btn-blue" onclick="processVerifiedProjectSubmission()" style="flex: 1;">Confirm Sending</button>
+        </div>
+    `;
+}
+
+/**
+ * Validates inputs, checks credentials, constructs text formatting templates,
+ * and handles multi-template dispatch sequencing protocols.
+ */
+function processVerifiedProjectSubmission() {
+    const inputEmail = document.getElementById("verification-email").value.trim();
+    const inputPassword = document.getElementById("verification-password").value.trim();
+    const errorNode = document.getElementById("password-error-node");
+
+    if (!inputEmail || !inputPassword) {
+        alert("Please fill out both your email and password fields before continuing.");
+        return;
+    }
+
+    // Validate if the inputted credential matches the active state profile key
+    const currentRegisteredPassword = APP_STATE.currentUser.password || "";
+    if (inputPassword !== currentRegisteredPassword) {
+        if (errorNode) {
+            errorNode.style.display = "block"; // Displays the hidden incorrect password node alert
+        }
+        return;
+    }
+
+    // Hide error node if verification succeeds
+    if (errorNode) {
+        errorNode.style.display = "none";
+    }
+
+    const projectOwnerName = APP_STATE.currentUser.identityName || "Developer Profile User";
+    const dialCode = APP_STATE.currentUser.dialingCode || "234";
+    const whatsappNumber = APP_STATE.currentUser.whatsappNumber || "";
+    const websiteName = APP_STATE.currentProject.name || "Unspecified Workspace Template Title";
+    const websiteLayout = APP_STATE.currentProject.layouts || "No explicit structural outlines logged.";
+    const websiteFeatures = APP_STATE.currentProject.features || "No feature criteria defined.";
+
+    const templateIdsAttached = APP_STATE.currentProject.linkedTemplates.map(t => t.id).join(", ") || "None Linked";
+
+    // Text Template String Layout includes input verification email in the body
+    const formattedEmailMessageBodyContent = `
+Hi Fort Developers, I am ${projectOwnerName},
+My email address is: ${inputEmail}
+My whatsapp number is +${dialCode}${whatsappNumber}
+
+I need you to create a website for me named ${websiteName}.
+This is my layout;
+${websiteLayout}
+
+These are the features;
+${websiteFeatures}
+
+All my files needed are attached to the message. Linked Framework Design Template IDs: [${templateIdsAttached}].
+Thanks.
+    `;
+
+    // Consolidated variables dataset parameter map passing explicit routing definitions
+    const emailJsPayloadVariablesParameters = {
+        to_email: "fortdevelopers492@gmail.com",
+        from_name: projectOwnerName,
+        project_name: websiteName,
+        message: formattedEmailMessageBodyContent,
+        user_email: inputEmail // Explicit key argument mapped to route dashboard auto-replies
+    };
+
+    // Close security validation view state to prepare next status message
+    closeSecondaryOverlayModal();
+
+    // Template 1 Dispatch Chain Execution
+    emailjs.send("service_ejag5pe", "template_zplwktm", emailJsPayloadVariablesParameters)
+        .then(() => {
+            // Template 2 Dispatch Chain Execution (Fires auto-reply routing payload)
+            return emailjs.send("service_ejag5pe", "template_9lerger", emailJsPayloadVariablesParameters);
+        })
+        .then(() => {
+            // Displays success UI prompt modal only if operations pass seamlessly without faults
+            promptWhatsAppManualFilesSubmissionModal();
+        })
+        .catch((error) => {
+            console.error("Transmission interruption dropped connection:", error);
+            // Render an explicit failure message layout instead of displaying the WhatsApp prompt modal
+            promptEmailTransmissionFailureModal(error);
+        });
+}
+
+/**
+ * Generates an alternative overlay dashboard warning card block when transfers encounter fatal interruptions.
+ */
+function promptEmailTransmissionFailureModal(errorDetails) {
+    const overlay = document.getElementById("secondary-modal");
+    const content = document.getElementById("secondary-modal-content");
+    if (!overlay || !content) return;
+
+    overlay.classList.add("active");
+    content.className = "modal-box";
+
+    content.innerHTML = `
+        <h3 style="color: #e63946;">Submission Failed</h3>
+        <p class="margin-top-sm" style="line-height: 1.5; color: var(--dark-charcoal);">
+            Your request could not be sent. Please check your network connection and try again.
+        </p>
+        <p style="font-size: 0.75rem; color: gray; margin-top: 5px; font-family: monospace;">
+            Error Details: ${errorDetails?.text || errorDetails?.message || "Unknown error context"}
+        </p>
+        <div class="btn-group margin-top-md">
+            <button class="btn-gray" style="width: 100%;" onclick="closeSecondaryOverlayModal()">Close</button>
+        </div>
+    `;
+}
+
+/**
+ * Renders the WhatsApp document asset notification overlay modal view card framework block.
+ */
+function promptWhatsAppManualFilesSubmissionModal() {
+    const overlay = document.getElementById("secondary-modal");
+    const content = document.getElementById("secondary-modal-content");
+    if (!overlay || !content) return;
+
+    overlay.classList.add("active");
+    content.className = "modal-box";
+
+    content.innerHTML = `
+        <h3>Email Forwarded Successfully</h3>
+        <p class="margin-top-sm" style="line-height: 1.5; color: var(--dark-charcoal);">
+            Please send the files manually on WhatsApp to complete your design configuration manifest submission sequence.
+        </p>
+        <div class="btn-group margin-top-md">
+            <button class="btn-blue" style="width: 100%; background-color: #25D366;" onclick="executeWhatsAppRedirectionRedirect()">Send</button>
+        </div>
+    `;
+}
+
+/**
+ * Compiles a deep link redirection string mapping the required WhatsApp messaging layout template configurations.
+ */
+function executeWhatsAppRedirectionRedirect() {
+    const defaultSupportLineNumber = "2348028241162"; // Nigeria (+234) 08028241162 pipeline target
+    const targetPrewrittenMessageText = "I've sent my instructions via email this are my files.";
+    
+    const secureEncodedUrlPipelineString = `https://wa.me/${defaultSupportLineNumber}?text=${encodeURIComponent(targetPrewrittenMessageText)}`;
+    
+    window.open(secureEncodedUrlPipelineString, "_blank");
+    closeSecondaryOverlayModal();
+}
+
+/**
+ * Universal dismiss helper action used to wipe target active overlay tags.
+ */
+function closeSecondaryOverlayModal() {
+    const overlay = document.getElementById("secondary-modal");
+    if (overlay) {
+        overlay.classList.remove("active");
+    }
+}
+

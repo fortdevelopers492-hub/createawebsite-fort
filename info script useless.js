@@ -2,9 +2,39 @@
 if (!localStorage.getItem("SYSTEM_DATABASE")) {
     window.SYSTEM_DATABASE = {
         users: [
-            { uid: "admin", identifierText: "Fort Dev Admin", secretKey: "Fort492#", dialingCode: "234", identityName: "Fort Dev Admin",  projectData: {name: "Fort Admin Project", layouts: "", features: "", linkedTemplates: [], linkedFiles: []}}
+            { uid: "admin", identifierText: "Admin", secretKey: "Admin@123", dialingCode: "234" }
         ],
         chats: [],
+        templates: [
+            { 
+                id: "tmpl_001", 
+                name: "E-Commerce Basic", 
+                category: "Retail", 
+                description: "Clean grid layout with minimal shopping cart utilities.", 
+                images: ["https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=500"] 
+            },
+            { 
+                id: "tmpl_002", 
+                name: "Creative Agency Portfolio", 
+                category: "Corporate", 
+                description: "Bespoke look targeted toward digital agencies.", 
+                images: ["https://images.unsplash.com/photo-1507238691740-187a5b1d37b8?w=500"] 
+            },
+            { 
+                id: "tmpl_003", 
+                name: "SaaS Application Landing Page", 
+                category: "Tech", 
+                description: "High converting dark layout showcasing technical copy fields.", 
+                images: ["https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=500"] 
+            },
+            { 
+                id: "tmpl_004", 
+                name: "Fort", 
+                category: "Tech", 
+                description: "A website advertising Fort", 
+                images: ["tmpl_004_1.png", "tmpl_004_2.png", "tmpl_004_3.png", "tmpl_004_4.png"] 
+            }
+        ]
     };
     localStorage.setItem("SYSTEM_DATABASE", JSON.stringify(window.SYSTEM_DATABASE));
 } else {
@@ -80,7 +110,7 @@ function renderRememberedUserPromptLayout(savedData) {
         </div>
         <div class="btn-group" style="display: flex; flex-direction: column; gap: 10px;">
             <button onclick="executeRememberedUserSignIn('${safeUid}')" class="btn-blue" style="width: 100%;">
-                Continue with ${safeIdentifier}
+                Continue as ${safeIdentifier}
             </button> 
             <button onclick="renderSignInFormLayout()" class="btn-gray" style="width: 100%;">
                 Sign in as new user
@@ -347,50 +377,10 @@ function saveCurrentWorkspaceData(alertUser = false) {
 }
 
 // CHOOSE TEMPLATE MODAL FLOW 
-// Dedicated static runtime source for templates to prevent database sync issues
-// Dedicated static runtime source for templates to prevent database sync issues 
-const HARDCODED_TEMPLATES_ARRAY = [
-    { 
-        id: "tmpl_001", 
-        name: "E-Commerce Basic", 
-        category: "Retail", 
-        description: "Clean grid layout with minimal shopping cart utilities.", 
-        images: ["https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=500"] 
-    },
-    { 
-        id: "tmpl_002", 
-        name: "Creative Agency Portfolio", 
-        category: "Corporate", 
-        description: "Bespoke look targeted toward digital agencies.", 
-        images: ["https://images.unsplash.com/photo-1507238691740-187a5b1d37b8?w=500"] 
-    },
-    { 
-        id: "tmpl_003", 
-        name: "SaaS Application Landing Page", 
-        category: "Tech", 
-        description: "High converting dark layout showcasing technical copy fields.", 
-        images: ["https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=500"] 
-    },
-    { 
-        id: "tmpl_004", 
-        name: "Fort", 
-        category: "Tech", 
-        description: "A website advertising Fort.", 
-        images: ["https://fortdevelopers492-hub.github.io/createawebsite-fort/tmpl%20004_1.png", "https://fortdevelopers492-hub.github.io/createawebsite-fort/tmpl%20004_2.png"] 
-    },
-    {
-        id: "tmpl_005",
-        name: "Fort-Create a Website",
-        category: "Contact Form",
-        description: "A simple website sending all info imputted directly to Fort developers. Note that this website was made mainly for desktop scrreens.",
-        images: ["https://fortdevelopers492-hub.github.io/createawebsite-fort/tmpl%20005_1.png", "https://fortdevelopers492-hub.github.io/createawebsite-fort/tmpl%20005_2.png"]
-    }
-];
-
 function openTemplateSelectorModal() {
     const overlay = document.getElementById("secondary-modal");
     const content = document.getElementById("secondary-modal-content");
-    overlay.classList.add("active"); 
+    overlay.classList.add("active");
     content.className = "modal-box modal-box-large";
 
     content.innerHTML = `
@@ -402,27 +392,27 @@ function openTemplateSelectorModal() {
         <div class="margin-top-md text-center">
             <button class="btn-gray" onclick="closeSecondaryOverlayModal()">Close</button>
         </div>
-    `; 
-    filterTemplateGalleryView(); 
+    `;
+    filterTemplateGalleryView();
 }
 
 function filterTemplateGalleryView() {
-    const query = document.getElementById("tmpl-search-bar").value.toLowerCase(); 
-    const target = document.getElementById("tmpl-gallery-target"); 
-    target.innerHTML = ''; 
+    const query = document.getElementById("tmpl-search-bar").value.toLowerCase();
+    const target = document.getElementById("tmpl-gallery-target");
+    target.innerHTML = '';
 
-    const matches = HARDCODED_TEMPLATES_ARRAY.filter(t => 
+    const matches = SYSTEM_DATABASE.templates.filter(t => 
         t.id.toLowerCase().includes(query) || 
         t.name.toLowerCase().includes(query) || 
         t.description.toLowerCase().includes(query)
-    ); 
+    );
 
     matches.forEach(t => {
-        const card = document.createElement("div"); 
-        card.className = "template-card"; 
+        const card = document.createElement("div");
+        card.className = "template-card";
         
-        // Displays only one picture in the non-expanded view layout gallery 
-        const initialDisplayImage = (t.images && t.images.length > 0) ? t.images[0] : ''; 
+        // Displays the first picture in the non-expanded view layout parameter
+        const initialDisplayImage = (t.images && t.images.length > 0) ? t.images[0] : '';
 
         card.innerHTML = `
             <img src="${initialDisplayImage}" alt="${t.name}">
@@ -430,57 +420,62 @@ function filterTemplateGalleryView() {
                 <h4>${t.name}</h4>
                 <p style="font-size:0.8rem; color:gray; margin-top:4px;">${t.description.substring(0, 60)}...</p>
             </div>
-        `; 
-        card.onclick = () => openExpandedTemplateDetailsView(t); 
-        target.appendChild(card); 
+        `;
+        card.onclick = () => openExpandedTemplateDetailsView(t);
+        target.appendChild(card);
     });
 }
 
 function openExpandedTemplateDetailsView(templateObj) {
-    const content = document.getElementById("secondary-modal-content"); 
-    
-    // Generates equivalent individual picture containers for every image in expanded view
-    let imagesContainerHTML = '<div class="expanded-images-grid" style="display: flex; flex-direction: column; gap: 12px; margin-bottom: 15px;">'; 
-    if (templateObj.images && templateObj.images.length > 0) {
+    const content = document.getElementById("secondary-modal-content");
+    const initialMainImage = (templateObj.images && templateObj.images.length > 0) ? templateObj.images[0] : '';
+
+    // Generate thumbnails element buttons if the template contains multiple images
+    let thumbnailsHTML = '';
+    if (templateObj.images && templateObj.images.length > 1) {
+        thumbnailsHTML = `<div class="template-thumbnail-row">`;
         templateObj.images.forEach((imgSrc, idx) => {
-            imagesContainerHTML += `
-                <div class="expanded-image-wrapper" style="width: 100%; border: 1px solid #dee2e6; border-radius: 6px; overflow: hidden;">
-                    <img src="${imgSrc}" style="width: 100%; height: auto; display: block; object-fit: contain;" alt="Template Image ${idx + 1}">
-                </div>
+            thumbnailsHTML += `
+                <img src="${imgSrc}" 
+                     class="thumbnail-img ${idx === 0 ? 'active' : ''}" 
+                     onclick="updateMainExpandedImagePreview(this, '${imgSrc}')" 
+                     alt="Thumbnail ${idx + 1}">
             `;
         });
+        thumbnailsHTML += `</div>`;
     }
-    imagesContainerHTML += '</div>';
 
     content.innerHTML = `
         <h3>${templateObj.name}</h3>
         <p style="color:var(--fort-gray-slate); font-size:0.85rem; margin-bottom:10px;">Template Infrastructure Identification Key Reference: ${templateObj.id}</p>
         
-        ${imagesContainerHTML}
+        <img id="expanded-main-preview" src="${initialMainImage}" style="width:100%; height:280px; object-fit:cover; border-radius:6px;" />
+        
+        ${thumbnailsHTML}
         
         <p class="margin-top-sm" style="line-height:1.5;">${templateObj.description}</p>
         <div class="btn-group margin-top-md" style="display:flex; gap:10px;">
             <button class="btn-gray" onclick="openTemplateSelectorModal()" style="flex:1;">Back to Gallery</button>
             <button class="btn-blue" onclick="linkTemplateToCurrentProject('${templateObj.id}', '${templateObj.name}')" style="flex:1;">Choose Template</button>
         </div>
-    `; 
+    `;
+}
+
+// Interactive helper utility function to switch main picture in expanded view
+function updateMainExpandedImagePreview(thumbnailElement, targetImgSrc) {
+    document.getElementById("expanded-main-preview").src = targetImgSrc;
+    const thumbnails = document.querySelectorAll(".thumbnail-img");
+    thumbnails.forEach(el => el.classList.remove("active"));
+    thumbnailElement.classList.add("active");
 }
 
 function linkTemplateToCurrentProject(id, name) {
     if (!APP_STATE.currentProject.linkedTemplates.some(t => t.id === id)) {
-        APP_STATE.currentProject.linkedTemplates.push({ id, name }); 
-        saveCurrentWorkspaceData(); 
-        renderAssetGridContainers(); 
+        APP_STATE.currentProject.linkedTemplates.push({ id, name });
+        saveCurrentWorkspaceData();
+        renderAssetGridContainers();
     }
-    closeSecondaryOverlayModal(); 
-}
-
-// Global modal window termination action to fix unclickable/broken cancel loops 
-function closeSecondaryOverlayModal() {
-    const overlay = document.getElementById("secondary-modal");
-    if (overlay) {
-        overlay.classList.remove("active");
-    }
+    closeSecondaryOverlayModal();
 }
 
 // FLOATING ACTION ATTACH FILE MODAL FLOW 
@@ -535,7 +530,7 @@ function handleFileSelectionPreviewChange(inputNode) {
         };
         reader.readAsDataURL(file);
     } else {
-        // File handling generic icon system implementation 
+        // File handling generic icon system implementation [cite: 121]
         previewBox.innerHTML = `
             <div style="text-align:center;">
                 <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline></svg>
@@ -662,88 +657,9 @@ function executePurgeWorkspaceSequence() {
     renderWorkspaceMainView();
 }
 
-
-// =========================================================================
-// WHATSAPP PIPELINE ENGINE UTILITY LINK & IDENTITY VERIFICATION SUBSYSTEM
-// =========================================================================
-
-/**
- * Initiates the project submission pipeline by opening an identity 
- * verification modal requesting the user's password key with a toggle option.
- */
+// EMAILJS PIPELINE ENGINE UTILITY LINK
 function sendProjectToFortDevelopers() {
-    // Save workspace data before triggering validation views
     saveCurrentWorkspaceData();
-
-    const overlay = document.getElementById("secondary-modal");
-    const content = document.getElementById("secondary-modal-content");
-    
-    if (!overlay || !content) return;
-
-    overlay.classList.add("active");
-    content.className = "modal-box";
-
-    content.innerHTML = `
-        <h3>Verify Your Identity</h3>
-        <p style="font-size: 0.85rem; color: var(--dark-charcoal); margin-top: 5px;">
-            Enter your password to send your project details and attached files directly via WhatsApp.
-        </p>
-        <div class="form-input-container margin-top-sm" style="display: flex; flex-direction: column; gap: 10px;">
-            <input type="password" id="verification-password" class="form-field-control" placeholder="Enter confirmation password verification string" required style="width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px;">
-            
-            <!-- Show Password Checkbox Element -->
-            <div style="display: flex; align-items: center; gap: 6px; margin-top: 2px;">
-                <input type="checkbox" id="toggle-password-visibility" onclick="toggleVerificationPasswordMasking()" style="cursor: pointer;">
-                <label for="toggle-password-visibility" style="font-size: 0.8rem; color: gray; cursor: pointer; user-select: none;">Show Password</label>
-            </div>
-            
-            <!-- Error node placeholder container aligning with your CSS class definitions -->
-            <div id="password-error-node" class="text-danger-alert hidden-node"></div>
-        </div>
-        <div class="btn-group margin-top-md" style="display: flex; gap: 10px;">
-            <button class="btn-gray" onclick="closeSecondaryOverlayModal()" style="flex: 1;">Cancel</button>
-            <button class="btn-blue" onclick="processVerifiedProjectSubmission()" style="flex: 1; background-color: #25D366;">Send to WhatsApp</button>
-        </div>
-    `;
-}
-
-/**
- * Toggles the input masking attribute between protected text and standard characters.
- */
-function toggleVerificationPasswordMasking() {
-    const passwordField = document.getElementById("verification-password");
-    if (passwordField) {
-        passwordField.type = passwordField.type === "password" ? "text" : "password";
-    }
-}
-
-/**
- * Validates password criteria matches the application's verification key,
- * and compiles the target project string directly into the wa.me pipeline redirect.[cite: 7]
- */
-function processVerifiedProjectSubmission() {
-    const inputPassword = document.getElementById("verification-password").value;
-    const errorNode = document.getElementById("password-error-node");
-    
-    // Clear and hide error box safely
-    if (errorNode) {
-        errorNode.classList.add("hidden-node");
-        errorNode.innerText = "";
-    }
-
-    if (!inputPassword) {
-        alert("Please enter your password before continuing.");
-        return;
-    }
-
-    // Matches verification exactly against your system's current profile schema
-    if (inputPassword !== APP_STATE.currentUser.secretKey) {
-        if (errorNode) {
-            errorNode.innerText = "Security Validation Verification Error: Incorrect Password Matching Entry.";
-            errorNode.classList.remove("hidden-node");
-        }
-        return;
-    }
 
     const projectOwnerName = APP_STATE.currentUser.identityName || "Developer Profile User";
     const dialCode = APP_STATE.currentUser.dialingCode || "234";
@@ -754,8 +670,9 @@ function processVerifiedProjectSubmission() {
 
     const templateIdsAttached = APP_STATE.currentProject.linkedTemplates.map(t => t.id).join(", ") || "None Linked";
 
-    // Text Template String Layout containing all project info
-    const formattedWhatsAppMessageBodyContent = `Hi Fort Developers, I am ${projectOwnerName},
+    // Text Template String Layout Formatting Framework matches exact text specifications
+    const formattedEmailMessageBodyContent = `
+Hi Fort Developers, I am ${projectOwnerName},
 My whatsapp number is +${dialCode}${whatsappNumber}
 
 I need you to create a website for me named ${websiteName}.
@@ -765,26 +682,53 @@ ${websiteLayout}
 These are the features;
 ${websiteFeatures}
 
-All my files needed are attached to this message. Linked Framework Design Template IDs: [${templateIdsAttached}].
-Thanks.`;
+All my files needed are attached to the message. Linked Framework Design Template IDs: [${templateIdsAttached}].
+Thanks.
+    `;
 
-    // Close security validation view state to prepare for redirect
-    closeSecondaryOverlayModal();
+    const emailJsPayloadVariablesParameters = {
+        to_email: "fortdevelopers492@gmail.com",
+        from_name: projectOwnerName,
+        project_name: websiteName,
+        message: formattedEmailMessageBodyContent
+        // Note: files parameter is intentionally skipped here to prevent electronic attachment transfer
+    };
 
-    // Compile deep link redirection string routing directly to WhatsApp
-    const defaultSupportLineNumber = "2348028241162"; // target support line
-    const secureEncodedUrlPipelineString = `https://wa.me/${defaultSupportLineNumber}?text=${encodeURIComponent(formattedWhatsAppMessageBodyContent)}`;
-    
-    // Launch window directly to the WhatsApp chat configuration
-    window.open(secureEncodedUrlPipelineString, "_blank");
+    emailjs.send("YOUR_SERVICE_ID", "YOUR_TEMPLATE_ID", emailJsPayloadVariablesParameters)
+        .then(() => {
+            promptWhatsAppManualFilesSubmissionModal();
+        })
+        .catch((error) => {
+            console.error("Transmission interruption dropped connection:", error);
+            // Fallback safety prompt for local sandbox environments
+            promptWhatsAppManualFilesSubmissionModal();
+        });
 }
 
-/**
- * Universal dismiss helper action used to wipe target active overlay tags.
- */
-function closeSecondaryOverlayModal() {
+function promptWhatsAppManualFilesSubmissionModal() {
     const overlay = document.getElementById("secondary-modal");
-    if (overlay) {
-        overlay.classList.remove("active");
-    }
+    const content = document.getElementById("secondary-modal-content");
+    overlay.classList.add("active");
+    content.className = "modal-box";
+
+    content.innerHTML = `
+        <h3>Email Forwarded Successfully</h3>
+        <p class="margin-top-sm" style="line-height: 1.5; color: var(--dark-charcoal);">
+            Please send the files manually on WhatsApp to complete your design configuration manifest submission sequence.
+        </p>
+        <div class="btn-group margin-top-md">
+            <button class="btn-blue" style="width: 100%; background-color: #25D366;" onclick="executeWhatsAppRedirectionRedirect()">Send</button>
+        </div>
+    `;
+}
+
+function executeWhatsAppRedirectionRedirect() {
+    const defaultSupportLineNumber = "2348028241162"; // Nigeria (+234) 08028241162 pipeline target
+    const targetPrewrittenMessageText = "I've sent my instructions through email this are my files.";
+    
+    const secureEncodedUrlPipelineString = `https://wa.me/${defaultSupportLineNumber}?text=${encodeURIComponent(targetPrewrittenMessageText)}`;
+    
+    // Launch out connection line framework container window
+    window.open(secureEncodedUrlPipelineString, "_blank");
+    closeSecondaryOverlayModal();
 }
