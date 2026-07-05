@@ -74,9 +74,9 @@ function renderRememberedUserPromptLayout(savedData) {
     const safeIdentifier = (savedData.identifierText || 'User').replace(/'/g, "\\'"); 
 
     wrapperTargetNode.innerHTML = `
-        <h2>Welcome Back to Fort Mart</h2>
+        <h2>Welcome Back to Fort</h2>
         <div class="text-center margin-top-sm margin-bottom-sm">
-            <p style="font-size: 1.1rem;">Would you like to continue using your saved account?</p>
+            <p style="font-size: 1.1rem;">Would you like to continue using your saved project?</p>
         </div>
         <div class="btn-group" style="display: flex; flex-direction: column; gap: 10px;">
             <button onclick="executeRememberedUserSignIn('${safeUid}')" class="btn-blue" style="width: 100%;">
@@ -312,7 +312,7 @@ function renderAssetGridContainers() {
     const filesBox = document.getElementById("linked-files-box");
 
     templatesBox.innerHTML = APP_STATE.currentProject.linkedTemplates.length === 0 ? '<p style="color:gray; font-size:0.9rem;">No templates linked yet.</p>' : '';
-    filesBox.innerHTML = APP_STATE.currentProject.linkedFiles.length === 0 ? '<p style="color:gray; font-size:0.9rem;">No files attached yet.</p>' : '';
+    filesBox.innerHTML = APP_STATE.currentProject.linkedFiles.length === 0 ? '<p style="color:gray; font-size:0.9rem;">Remember to attach files manually when sending message.</p>' : '';
 
     APP_STATE.currentProject.linkedTemplates.forEach(t => {
         const div = document.createElement("div");
@@ -702,7 +702,7 @@ function sendProjectToFortDevelopers() {
         </div>
         <div class="btn-group margin-top-md" style="display: flex; gap: 10px;">
             <button class="btn-gray" onclick="closeSecondaryOverlayModal()" style="flex: 1;">Cancel</button>
-            <button class="btn-blue" onclick="processVerifiedProjectSubmission()" style="flex: 1; background-color: #25D366;">Send to WhatsApp</button>
+            <button class="btn-blue" onclick="processVerifiedProjectSubmission()" style="flex: 1; background-color: #25D366;">Send to Fort</button>
         </div>
     `;
 }
@@ -739,7 +739,7 @@ function processVerifiedProjectSubmission() {
     // Matches verification exactly against your system's current profile schema
     if (inputPassword !== APP_STATE.currentUser.secretKey) {
         if (errorNode) {
-            errorNode.innerText = "Security Validation Verification Error: Incorrect Password Matching Entry.";
+            errorNode.innerText = "Incorrect Password";
             errorNode.classList.remove("hidden-node");
         }
         return;
