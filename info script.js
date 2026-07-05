@@ -382,7 +382,7 @@ const HARDCODED_TEMPLATES_ARRAY = [
         id: "tmpl_005",
         name: "Fort-Create a Website",
         category: "Contact Form",
-        description: "A simple website sending all info imputted directly to Fort developers. Note that this website was made mainly for desktop scrreens.",
+        description: "A simple website sending all info imputted directly to Fort developers.",
         images: ["https://fortdevelopers492-hub.github.io/createawebsite-fort/tmpl%20005_1.png", "https://fortdevelopers492-hub.github.io/createawebsite-fort/tmpl%20005_2.png"]
     }
 ];
