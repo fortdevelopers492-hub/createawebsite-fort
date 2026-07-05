@@ -259,3 +259,43 @@ main {
 .thumbnail-img.active {
     border-color: var(--fort-blue);
 }
+
+/* ========================================================================= */
+/* MOBILE RESPONSIVE LAYOUT (PHONE CSS)                                      */
+/* ========================================================================= */
+@media screen and (max-width: 768px) {
+    /* Moves the buttons below the "Fort Workspace" title */
+    header {
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 15px 20px;
+    }
+
+    header h2 {
+        margin-bottom: 15px;
+    }
+
+    /* Allows buttons to wrap nicely if the phone screen is very narrow */
+    .header-actions {
+        flex-wrap: wrap;
+        width: 100%;
+        gap: 8px; /* Slightly tighter gap for smaller screens */
+    }
+
+    /* Makes input fields and textareas smaller */
+    .form-field-control {
+        padding: 6px 10px;
+        font-size: 0.9rem;
+    }
+
+    /* Shrinks the modal padding to give more usable space on phones */
+    .modal-box {
+        padding: 20px 15px;
+        width: 95%;
+    }
+
+    /* Shrinks the main workspace card padding */
+    .workspace-card {
+        padding: 15px;
+    }
+}
