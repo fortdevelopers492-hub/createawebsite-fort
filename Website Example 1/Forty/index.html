@@ -1,0 +1,220 @@
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<title>Fort - Website Example</title>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+		<link rel="stylesheet" href="assets/css/main.css" />
+		<noscript><link rel="stylesheet" href="assets/css/noscript.css" /></noscript>
+		<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+		<script type="text/javascript">
+		(function(){
+			// Initialize with your production EmailJS Public Key API configuration
+			emailjs.init({
+				publicKey: "YOUR_PUBLIC_KEY",
+			});
+		})();
+		</script>
+	</head>
+	<body class="is-preload">
+
+		<!-- Wrapper -->
+			<div id="wrapper">
+
+				<!-- Header -->
+					<header id="header" class="alt">
+						<a href="index.html" class="logo"><span>Fort Developers</span></a>
+						<nav>
+							<a href="#menu">Menu</a>
+						</nav>
+					</header>
+
+				<!-- Menu -->
+					<nav id="menu">
+						<ul class="links">
+							<li><a href="index.html">Home</a></li>
+							<li><a href="landing.html">Landing</a></li>
+							<li><a href="generic.html">Generic</a></li>
+							<li><a href="elements.html">Elements</a></li>
+						</ul>
+					</nav>
+
+				<!-- Banner -->
+					<section id="banner" class="major">
+						<div class="inner">
+							<header class="major">
+								<h1>Hi, We're Fort Developers</h1>
+							</header>
+							<div class="content">
+								<p>This is a fully responsive website template,<br />
+								that can be edited into your website by Fort Developers.</p>
+								<ul class="actions">
+									<li><a href="https://fortdevelopers492-hub.github.io/createawebsite-fort/procedures%20index.html/" class="button next scrolly">Get Started</a></li>
+								</ul>
+							</div>
+						</div>
+					</section>
+
+				<!-- Main -->
+					<div id="main">
+
+						<!-- One -->
+							<section id="one" class="tiles">
+								<article>
+									<span class="image">
+										<img src="images/pic01.jpg" alt="" />
+									</span>
+									<header class="major">
+										<h3><a class="link">Our Features</a></h3>
+										<p>Fort Developers is an elite, highly structured team of software engineers, system architects, and web developers dedicated to creating high-performance web applications and digital platforms for public use.</p>
+									</header>
+								</article>
+								<article>
+									<span class="image">
+										<img src="images/pic02.jpg" alt="" />
+									</span>
+									<header class="major">
+										<h3><a class="link">Our Services</a></h3>
+										<p>We focus on website creation for public use and custom websites for people, business, organization and any one who can need a website.</p>
+									</header>
+								</article>
+								<article>
+									<span class="image">
+										<img src="images/pic03.jpg" alt="" />
+									</span>
+									<header class="major">
+										<h3><a class="link">Need a Custom Website?</a></h3>
+										<p>If you need either a business, personal or a website for social purposes, just visit the <a href="https://fortdevelopers492-hub.github.io/createawebsite-fort/procedures%20index.html/">Fort Website Creation Page</a> and go through the required procedures.</p>
+									</header>
+								</article>
+								<article>
+									<span class="image">
+										<img src="images/pic04.jpg" alt="" />
+									</span>
+									<header class="major">
+										<h3><a href="landing.html" class="link">Our Websites</a></h3>
+										<p>Some of our websites for public use (not for clients) are: <br>
+											- Fort Mart - Marketplace and Chat <br> - Fort - Create a Website <br> - Fort Developers Home Page <br> - Website Templates
+										</p>
+									</header>
+								</article>
+								<article>
+									<span class="image">
+										<img src="images/pic05.jpg" alt="" />
+									</span>
+									<header class="major">
+										<h3><a href="index.html" class="link">This Website</a></h3>
+										<p>This is one of our wesbite examples for clients who want custom websites. It's text, images, layout, colours, features etc can be customized for a client who needs a website. A website with distinct features (without a template) can also be built for anyone who needs a website.</p>
+									</header>
+								</article>
+								<article>
+									<span class="image">
+										<img src="images/pic06.jpg" alt="" />
+									</span>
+									<header class="major">
+										<h3>Contact Form</h3>
+										<p><a href="#contact" target="_blank" class="link"></a>The contact form below is a customizable one in terms that if you want to retain the feature, you will choose the email the messages directly go to.</a></p>
+									</header>
+								</article>
+							</section>
+
+						<!-- Two -->
+							<section id="two">
+								<div class="inner">
+									<header class="major">
+										<h2>Customizable Header</h2>
+									</header>
+									<p>Customizable Text For Website Creation: Specify your desired words here. It can also be discarded. <br> Do you want to customize/create your own website with or without a template?</p>
+									<ul class="actions">
+										<li><a href="https://fortdevelopers492-hub.github.io/createawebsite-fort/procedures%20index.html/" class="button next">Get Started</a></li>
+									</ul>
+								</div>
+							</section>
+
+					</div>
+
+				<!-- Contact -->
+					<section id="contact">
+						<div class="inner">
+							<section>
+								<form method="post" action="#">
+									<div class="fields">
+										<div class="field half">
+											<label for="name">Name</label>
+											<input type="text" name="name" id="name" />
+										</div>
+										<div class="field half">
+											<label for="email">Email</label>
+											<input type="text" name="email" id="email" />
+										</div>
+										<div class="field">
+											<label for="message">Message</label>
+											<textarea name="message" id="message" rows="6"></textarea>
+										</div>
+									</div>
+									<p id="form-status"></p>
+									<ul class="actions">
+										<button type="button" class="primary" onclick="sendContactFormMessage(event)">Send Message</button>
+										<li><input type="reset" value="Clear" /></li>
+									</ul>
+									<br>
+									<p><i>(Sends an email directly to your specified email address)</i></p>
+								</form>
+							</section>
+							<section class="split">
+								<section>
+									<div class="contact-method">
+										<span class="icon solid alt fa-envelope"></span>
+										<h3>Email</h3>
+										<a href="mailto:fortdeveloperw492@gmail.com">fortdevelopers492@gmail.com</a>
+									</div>
+								</section>
+								<section>
+									<div class="contact-method">
+										<span class="icon solid alt fa-phone"></span>
+										<h3>Whatsapp Line</h3>
+										<span><a href="https://wa.me/2348028241162">+234(0)8028241162</a></span>
+									</div>
+								</section>
+								<section>
+									<div class="contact-method">
+										<span class="icon solid alt fa-home"></span>
+										<h3>Address</h3>
+										<span>Customizable<br />
+										Address For You<br />
+										Nigeria</span>
+									</div>
+								</section>
+							</section>
+						</div>
+					</section>
+
+				<!-- Footer -->
+					<footer id="footer">
+						<div class="inner">
+							<ul class="icons">
+								<li><a href="#" class="icon brands alt fa-twitter"><span class="label">Twitter</span></a></li>
+								<li><a href="https://facebook.com/fortdevelopers492" class="icon brands alt fa-facebook-f"><span class="label">Facebook</span></a></li>
+								<li><a href="#" class="icon brands alt fa-instagram"><span class="label">Instagram</span></a></li>
+								<li><a href="#" class="icon brands alt fa-linkedin-in"><span class="label">LinkedIn</span></a></li>
+							</ul>
+							<ul class="copyright">
+								<li>&copy; 2026</li><li>Note: All images, colours, text and themes are customizable for your website</li>
+							</ul>
+						</div>
+					</footer>
+
+			</div>
+
+		<!-- Scripts -->
+			<script src="assets/js/jquery.min.js"></script>
+			<script src="assets/js/jquery.scrolly.min.js"></script>
+			<script src="assets/js/jquery.scrollex.min.js"></script>
+			<script src="assets/js/browser.min.js"></script>
+			<script src="assets/js/breakpoints.min.js"></script>
+			<script src="assets/js/util.js"></script>
+			<script src="assets/js/main.js"></script>
+			<script src="contactform.js"></script>
+
+	</body>
+</html>
