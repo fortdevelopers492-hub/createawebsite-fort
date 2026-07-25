@@ -12,11 +12,6 @@ if (!localStorage.getItem("SYSTEM_DATABASE")) {
 }
 
 window.APP_STATE = { currentUser: null, currentProject: { id: null, name: "", layouts: "", features: "", linkedTemplates: [], linkedFiles: [] } };
-        
-// Initializing EmailJS Service Keys
-(function() {
-    emailjs.init("YOUR_PUBLIC_KEY_HERE"); 
-})();
 
 document.addEventListener("DOMContentLoaded", () => {
     evaluateRootAuthenticationContextState();
@@ -61,7 +56,7 @@ function renderInitialGatekeeperModal() {
             <div style="display: flex; gap: 15px; justify-content: center;">
                 <button class="btn-blue" onclick="renderSignInFormLayout()">Sign In</button>
                 <button class="btn-blue" onclick="renderSignUpFormLayout()">Sign Up</button>
-                <button class="btn-blue"><a href="index.html">Home</a></button> 
+                <button class="btn-blue"><a href="index.html">Instructions</a></button> 
             </div>
         </div>
     `; 
@@ -83,7 +78,7 @@ function renderRememberedUserPromptLayout(savedData) {
                 Continue with ${safeIdentifier}
             </button> 
             <button onclick="renderSignInFormLayout()" class="btn-gray" style="width: 100%;">
-                Sign in as new user
+                Sign in to another project
             </button>
         </div>
     `;
@@ -119,15 +114,17 @@ function renderSignInFormLayout() {
             <label>Password</label>
             <input type="password" id="auth-signin-password" class="form-field-control" placeholder="Enter password">
             <div id="err-signin-password" class="text-danger-alert hidden-node"></div>
-                    
-            <div class="margin-top-xs">
-                <input type="checkbox" id="chk-signin-showpass" onchange="toggleFieldVisibility('auth-signin-password', this)">
-                <label for="chk-signin-showpass">Show Password</label>
-            </div>
-            <div class="margin-top-xs">
-                <input type="checkbox" id="chk-signin-rememberme">
-                <label for="chk-signin-rememberme">Remember Me</label> 
-            </div>
+        </div>
+        <div style="margin-top: 6px; display: flex; align-items: center; gap: 6px;">
+            <input type="checkbox" id="chk-signin-showpass" onchange="toggleFieldVisibility('auth-signin-password', this)">
+            <label for="chk-signin-showpass" style="font-size: 0.8rem; font-weight: 400; cursor: pointer; user-select: none;">Show Password</label>            
+        </div>
+        <div style="margin-top: 6px; display: flex; align-items: center; gap: 6px;">
+            <input type="checkbox" id="chk-signin-rememberme">
+            <label for="chk-signin-rememberme" style="font-size: 0.8rem; font-weight: 400; cursor: pointer; user-select: none;">Remember Me</label>            
+        </div>
+        <div class="text-center margin-top-sm" style="font-size:0.9rem;">
+            <span>Don't have a project? </span><strong style="color:var(--fort-blue-light); cursor:pointer;" onclick="renderSignUpFormLayout()">Sign up</strong>
         </div>
         <div class="btn-group margin-top-md" style="display:flex; gap:10px;">
             <button onclick="renderInitialGatekeeperModal()" class="btn-gray" style="flex:1;">Back</button>
@@ -207,11 +204,11 @@ function renderSignUpFormLayout() {
         <div class="form-input-container">
             <label>Confirm Password Alignment</label>
             <input type="password" id="reg-pass2" class="form-field-control" placeholder="Re-type password">
-            <div class="margin-top-xs">
-                <input type="checkbox" id="chk-reg-show" onchange="toggleFieldVisibilityChainSignUp()">
-                <label for="chk-reg-show">Show Passwords</label>
-            </div>
             <div id="err-reg-feedback" class="text-danger-alert hidden-node"></div>
+        </div>
+        <div style="margin-top: 6px; display: flex; align-items: center; gap: 6px;">
+            <input type="checkbox" id="chk-reg-show" onchange="toggleFieldVisibilityChainSignUp()">
+            <label for="chk-reg-show" style="font-size: 0.8rem; font-weight: 400; cursor: pointer; user-select: none;">Show Passwords</label>            
         </div>
         <div class="btn-group margin-top-md" style="display:flex; gap:10px;">
             <button onclick="renderInitialGatekeeperModal()" class="btn-gray" style="flex:1;">Back</button>
@@ -343,11 +340,10 @@ function saveCurrentWorkspaceData(alertUser = false) {
         localStorage.setItem("SYSTEM_DATABASE", JSON.stringify(window.SYSTEM_DATABASE));
     }
 
-    if (alertUser) alert("Workspace system changes written down securely.");
+    if (alertUser) showTopRightToast("Changes Saved Succesfully", "success");
 }
 
 // CHOOSE TEMPLATE MODAL FLOW 
-// Dedicated static runtime source for templates to prevent database sync issues
 // Dedicated static runtime source for templates to prevent database sync issues 
 const HARDCODED_TEMPLATES_ARRAY = [
     { 
@@ -355,35 +351,56 @@ const HARDCODED_TEMPLATES_ARRAY = [
         name: "E-Commerce Basic", 
         category: "Retail", 
         description: "Clean grid layout with minimal shopping cart utilities.", 
-        images: ["https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=500"] 
+        images: ["https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=500"],
+        url: "website restricted.html" 
     },
     { 
         id: "tmpl_002", 
         name: "Creative Agency Portfolio", 
         category: "Corporate", 
         description: "Bespoke look targeted toward digital agencies.", 
-        images: ["https://images.unsplash.com/photo-1507238691740-187a5b1d37b8?w=500"] 
+        images: ["https://images.unsplash.com/photo-1507238691740-187a5b1d37b8?w=500"], 
+        url: "website restricted.html"
     },
     { 
         id: "tmpl_003", 
         name: "SaaS Application Landing Page", 
         category: "Tech", 
         description: "High converting dark layout showcasing technical copy fields.", 
-        images: ["https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=500"] 
+        images: ["https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=500"], 
+        url: "website restricted.html"
     },
     { 
         id: "tmpl_004", 
         name: "Fort", 
         category: "Tech", 
         description: "A website advertising Fort.", 
-        images: ["https://fortdevelopers492-hub.github.io/createawebsite-fort/tmpl%20004_1.png", "https://fortdevelopers492-hub.github.io/createawebsite-fort/tmpl%20004_2.png"] 
+        images: ["https://fortdevelopers492-hub.github.io/createawebsite-fort/tmpl%20004_1.png", "https://fortdevelopers492-hub.github.io/createawebsite-fort/tmpl%20004_2.png"],
+        url: "Fort%20Dev%20Home%20Page/index.html"
     },
     {
         id: "tmpl_005",
         name: "Fort-Create a Website",
         category: "Contact Form",
         description: "A simple website sending all info imputted directly to Fort developers.",
-        images: ["https://fortdevelopers492-hub.github.io/createawebsite-fort/tmpl%20005_1.png", "https://fortdevelopers492-hub.github.io/createawebsite-fort/tmpl%20005_2.png"]
+        images: ["https://fortdevelopers492-hub.github.io/createawebsite-fort/tmpl%20005_1.png", "https://fortdevelopers492-hub.github.io/createawebsite-fort/tmpl%20005_2.png"],
+        url: "index.html"
+    },
+    {
+        id: "tmpl_006",
+        name: "Website Example 1",
+        category: "Info Website",
+        description: "A simple website to advertise a person, business or institution. Note that more features can be added if required",
+        images: ["https://fortdevelopers492-hub.github.io/createawebsite-fort/Website%20Example%201/pic001.PNG", "https://fortdevelopers492-hub.github.io/createawebsite-fort/Website%20Example%201/pic002.PNG", "https://fortdevelopers492-hub.github.io/createawebsite-fort/Website%20Example%201/pic003.PNG"],
+        url: "Website Example 1/Forty/index.html"
+    },
+    {
+        id: "tmpl_007",
+        name: "Website Example 2",
+        category: "Info Website",
+        description: "A simple website to advertise a person, business or institution. Note that more features can be added if required",
+        images: ["https://fortdevelopers492-hub.github.io/createawebsite-fort/Website%20Example%202/pic001.PNG", "https://fortdevelopers492-hub.github.io/createawebsite-fort/Website%20Example%202/pic002.PNG", "https://fortdevelopers492-hub.github.io/createawebsite-fort/Website%20Example%203/pic003.PNG"],
+        url: "Website Example 2/Spectral/index.html"
     }
 ];
 
@@ -462,6 +479,7 @@ function openExpandedTemplateDetailsView(templateObj) {
         <div class="btn-group margin-top-md" style="display:flex; gap:10px;">
             <button class="btn-gray" onclick="openTemplateSelectorModal()" style="flex:1;">Back to Gallery</button>
             <button class="btn-blue" onclick="linkTemplateToCurrentProject('${templateObj.id}', '${templateObj.name}')" style="flex:1;">Choose Template</button>
+            <button class="btn-blue"><a href="${templateObj.url}">View Website</a></button>
         </div>
     `; 
 }
@@ -550,7 +568,7 @@ function handleFileSelectionPreviewChange(inputNode) {
 
 function commitAttachedAssetFileToWorkspace() {
     if (!CURRENTLY_PROCESSING_FILE_DATA) {
-        alert("Please click select structural resource file references first.");
+        showTopRightToast("Please click select structural resource file references first.", "info");
         return;
     }
     const structuralCustomOverrideName = document.getElementById("asset-filename-input").value.trim();
@@ -658,7 +676,7 @@ function executePurgeWorkspaceSequence() {
     }
 
     closeSecondaryOverlayModal();
-    alert("Workspace resource data completely stripped from system registers.");
+    showTopRightToast("Workspace resource data completely stripped from system registers.", "success");
     renderWorkspaceMainView();
 }
 
@@ -732,7 +750,7 @@ function processVerifiedProjectSubmission() {
     }
 
     if (!inputPassword) {
-        alert("Please enter your password before continuing.");
+        showTopRightToast("Please enter your password before continuing.", "info");
         return;
     }
 
@@ -786,5 +804,102 @@ function closeSecondaryOverlayModal() {
     const overlay = document.getElementById("secondary-modal");
     if (overlay) {
         overlay.classList.remove("active");
+    }
+}
+
+/**
+ * Fort Mart Preloader and Progress Meter Controller Hook
+ */
+document.addEventListener("DOMContentLoaded", () => {
+    const preloader = document.getElementById("preloader-container");
+    const progressBar = document.getElementById("preloader-progress-bar");
+    const progressText = document.getElementById("preloader-percentage-text");
+
+    if (!preloader || !progressBar) return;
+
+    let progress = 0;
+    const duration = 3000; // Total loading screen time (3 seconds)
+    const intervalTime = 30; // Update step resolution in milliseconds
+    const step = (intervalTime / duration) * 100;
+
+    const progressInterval = setInterval(() => {
+        progress += step;
+
+        if (progress >= 100) {
+            progress = 100;
+            clearInterval(progressInterval);
+            
+            // Turn completely solid blue in its final stage
+            progressBar.classList.add("fully-complete");
+            progressBar.style.width = "100%";
+            progressText.innerText = "Ready!";
+
+            // Smoothly remove preloader after reaching full status
+            setTimeout(() => {
+                preloader.classList.add("fade-out");
+                
+                // Let other state machine rendering scripts safely execute after opening
+                if (typeof initApplicationState === 'function') {
+                    initApplicationState();
+                }
+            }, 400); // Tiny delay to let the user see the 100% complete state
+        } else {
+            progressBar.style.width = `${progress}%`;
+            progressText.innerText = `Loading ${Math.floor(progress)}%`;
+
+            // Change to complete blue within the last 1-2 seconds of loading 
+            if (progress >= 66) { 
+                progressBar.classList.add("fully-complete");
+            }
+        }
+    }, intervalTime);
+});
+
+/**
+ * Displays a custom animated toast notification from top-right.
+ * @param {string} message - Text content of the alert.
+ * @param {'success'|'error'|'info'} type - Theme flavor (default: 'success').
+ * @param {number} durationMs - Display duration before sliding out (default: 3500ms).
+ */
+function showTopRightToast(message, type = 'success', durationMs = 3500) {
+    // 1. Ensure the global container exists on the DOM
+    let container = document.getElementById('toast-container');
+    if (!container) {
+        container = document.createElement('div');
+        container.id = 'toast-container';
+        document.body.appendChild(container);
+    }
+
+    // 2. Create the toast element
+    const toast = document.createElement('div');
+    toast.className = `toast-notification toast-${type}`;
+    
+    // Add text message + manual close button
+    toast.innerHTML = `
+        <span>${message}</span>
+        <button class="toast-close-btn" aria-label="Close notification">&times;</button>
+    `;
+
+    container.appendChild(toast);
+
+    // 3. Trigger entry animation in next animation frame
+    requestAnimationFrame(() => {
+        toast.classList.add('toast-show');
+    });
+
+    // Helper for graceful exit removal
+    const dismissToast = () => {
+        toast.classList.remove('toast-show');
+        toast.addEventListener('transitionend', () => {
+            toast.remove();
+        }, { once: true });
+    };
+
+    // Manual close trigger on button click
+    toast.querySelector('.toast-close-btn').addEventListener('click', dismissToast);
+
+    // Auto dismiss timer
+    if (durationMs > 0) {
+        setTimeout(dismissToast, durationMs);
     }
 }
